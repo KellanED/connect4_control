@@ -83,7 +83,7 @@ void stepper_send_steps(uint16_t num, uint8_t dir)
 void stepper_go_home(void);
 
 /*!
-* @brief TIMER1_A3 interrupt vector ISR
+* @brief TIMER0_A3 interrupt vector ISR
 *
 * @par
 * Should trigger when timer counts to 0.
