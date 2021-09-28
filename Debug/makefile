@@ -146,34 +146,34 @@ endif
 
 # Add inputs and outputs from these tool invocations to the build variables 
 EXE_OUTPUTS += \
-emptyProject.out \
+MSP430.out \
 
 EXE_OUTPUTS__QUOTED += \
-"emptyProject.out" \
+"MSP430.out" \
 
 BIN_OUTPUTS += \
-emptyProject.hex \
+MSP430.hex \
 
 BIN_OUTPUTS__QUOTED += \
-"emptyProject.hex" \
+"MSP430.hex" \
 
 
 # All Target
 all: $(OBJS) $(CMD_SRCS) $(GEN_CMDS)
-	@$(MAKE) --no-print-directory -Onone "emptyProject.out"
+	@$(MAKE) --no-print-directory -Onone "MSP430.out"
 
 # Tool invocations
-emptyProject.out: $(OBJS) $(CMD_SRCS) $(GEN_CMDS)
+MSP430.out: $(OBJS) $(CMD_SRCS) $(GEN_CMDS)
 	@echo 'Building target: "$@"'
 	@echo 'Invoking: MSP430 Linker'
-	"C:/ti/ccs1040/ccs/tools/compiler/ti-cgt-msp430_20.2.5.LTS/bin/cl430" -vmspx --code_model=small --use_hw_mpy=F5 --advice:power="none" --advice:hw_config=all --define=DEPRECATED --define=__MSP430FR2433__ -g --printf_support=minimal --diag_warning=225 --diag_wrap=off --display_error_number --silicon_errata=CPU21 --silicon_errata=CPU22 --silicon_errata=CPU40 -z -m"emptyProject.map" --heap_size=160 --stack_size=160 --cinit_hold_wdt=on -i"C:/ti/ccs1040/ccs/ccs_base/msp430/include" -i"C:/ti/ccs1040/ccs/tools/compiler/ti-cgt-msp430_20.2.5.LTS/lib" -i"C:/ti/ccs1040/ccs/tools/compiler/ti-cgt-msp430_20.2.5.LTS/include" -i"C:/ti/ccs1040/ccs/ccs_base/msp430/lib/5xx_6xx_FRxx" --reread_libs --diag_wrap=off --display_error_number --warn_sections --xml_link_info="emptyProject_linkInfo.xml" --use_hw_mpy=F5 --rom_model -o "emptyProject.out" $(ORDERED_OBJS)
+	"C:/ti/ccs1040/ccs/tools/compiler/ti-cgt-msp430_20.2.5.LTS/bin/cl430" -vmspx --code_model=small --use_hw_mpy=F5 --advice:power="none" --advice:hw_config=all --define=DEPRECATED --define=__MSP430FR2433__ -g --printf_support=minimal --diag_warning=225 --diag_wrap=off --display_error_number --silicon_errata=CPU21 --silicon_errata=CPU22 --silicon_errata=CPU40 -z -m"MSP430.map" --heap_size=160 --stack_size=160 --cinit_hold_wdt=on -i"C:/ti/ccs1040/ccs/ccs_base/msp430/include" -i"C:/ti/ccs1040/ccs/tools/compiler/ti-cgt-msp430_20.2.5.LTS/lib" -i"C:/ti/ccs1040/ccs/tools/compiler/ti-cgt-msp430_20.2.5.LTS/include" -i"C:/ti/ccs1040/ccs/ccs_base/msp430/lib/5xx_6xx_FRxx" --reread_libs --diag_wrap=off --display_error_number --warn_sections --xml_link_info="MSP430_linkInfo.xml" --use_hw_mpy=F5 --rom_model -o "MSP430.out" $(ORDERED_OBJS)
 	@echo 'Finished building target: "$@"'
 	@echo ' '
 
-emptyProject.hex: $(EXE_OUTPUTS)
+MSP430.hex: $(EXE_OUTPUTS)
 	@echo 'Building secondary target: "$@"'
 	@echo 'Invoking: MSP430 Hex Utility'
-	"C:/ti/ccs1040/ccs/tools/compiler/ti-cgt-msp430_20.2.5.LTS/bin/hex430" --memwidth=8 --romwidth=8 --diag_wrap=off -o "emptyProject.hex" $(EXE_OUTPUTS__QUOTED)
+	"C:/ti/ccs1040/ccs/tools/compiler/ti-cgt-msp430_20.2.5.LTS/bin/hex430" --memwidth=8 --romwidth=8 --diag_wrap=off -o "MSP430.hex" $(EXE_OUTPUTS__QUOTED)
 	@echo 'Finished building secondary target: "$@"'
 	@echo ' '
 
