@@ -9,21 +9,27 @@ CMD_SRCS += \
 ../lnk_msp430fr2433.cmd 
 
 C_SRCS += \
-../main.c 
+../main.c \
+../stepper.c 
 
 C_DEPS += \
-./main.d 
+./main.d \
+./stepper.d 
 
 OBJS += \
-./main.obj 
+./main.obj \
+./stepper.obj 
 
 OBJS__QUOTED += \
-"main.obj" 
+"main.obj" \
+"stepper.obj" 
 
 C_DEPS__QUOTED += \
-"main.d" 
+"main.d" \
+"stepper.d" 
 
 C_SRCS__QUOTED += \
-"../main.c" 
+"../main.c" \
+"../stepper.c" 
 
 

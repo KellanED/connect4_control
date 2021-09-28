@@ -47,6 +47,8 @@ main.obj: C:/Users/Student/Box/CapstoneDev/MSP430/driverlib/MSP430FR2xx_4xx/adc.
 main.obj: C:/Users/Student/Box/CapstoneDev/MSP430/driverlib/MSP430FR2xx_4xx/crc.h
 main.obj: C:/Users/Student/Box/CapstoneDev/MSP430/driverlib/MSP430FR2xx_4xx/rtc.h
 main.obj: ../Board.h
+main.obj: ../defines.h
+main.obj: ../stepper.h
 
 ../main.c:
 
@@ -141,4 +143,8 @@ C:/Users/Student/Box/CapstoneDev/MSP430/driverlib/MSP430FR2xx_4xx/crc.h:
 C:/Users/Student/Box/CapstoneDev/MSP430/driverlib/MSP430FR2xx_4xx/rtc.h:
 
 ../Board.h:
+
+../defines.h:
+
+../stepper.h:
 
