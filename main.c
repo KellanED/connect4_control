@@ -49,13 +49,13 @@ void main (void)
     CS_initFLLSettle(CS_MCLK_DESIRED_FREQUENCY_IN_KHZ, CS_MCLK_FLLREF_RATIO);
     CS_initClockSignal(CS_SMCLK, CS_DCOCLKDIV_SELECT, CS_CLOCK_DIVIDER_8);
 
-    // stepper init
+    // Initialize stepper driver
     stepper_init();
 
-    //Set LED1 as an output pin.
+    // Set LED1 as an output pin. - for verification, remove later
     GPIO_setAsOutputPin(
-        GPIO_PORT_LED1,
-        GPIO_PIN_LED1
+        GPIO_PORT_P1,
+        GPIO_PIN1
         );
 
     // Disable the GPIO power-on default high-impedance mode to activate
@@ -65,13 +65,29 @@ void main (void)
     // Enable global interrupts
     __bis_SR_register(GIE);
 
+    // Set S1 as input. for verification, remove later
+    GPIO_setAsInputPinWithPullUpResistor(
+            GPIO_PORT_S1,
+            GPIO_PIN_S1
+            );
+
+    // Set S2 as input. for verification, remove later
+    GPIO_setAsInputPinWithPullUpResistor(
+            GPIO_PORT_S2,
+            GPIO_PIN_S2
+            );
+
     while(1)
     {
-        // TAIFG interrupt flag is set when timer counts from TAxCCR0 to zero
-        // Output on TA1.1 = P1.5
-        __no_operation();
+        // testing send steps
+        if (!GPIO_getInputPinValue(GPIO_PORT_S1, GPIO_PIN_S1))
+        {
+            stepper_send_steps(0x0005, 0x0001);
+        }
+        else if (!GPIO_getInputPinValue(GPIO_PORT_S2, GPIO_PIN_S2))
+        {
+            stepper_send_steps(0x0003, 0x0000);
+        }
     }
 
 }
-
-

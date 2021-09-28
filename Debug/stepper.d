@@ -1,14 +1,6 @@
 # FIXED
 
 stepper.obj: ../stepper.c
-stepper.obj: C:/Users/Student/Box/CapstoneDev/MSP430/driverlib/MSP430FR2xx_4xx/driverlib.h
-stepper.obj: C:/Users/Student/Box/CapstoneDev/MSP430/driverlib/MSP430FR2xx_4xx/inc/hw_memmap.h
-stepper.obj: C:/ti/ccs1040/ccs/ccs_base/msp430/include/msp430.h
-stepper.obj: C:/ti/ccs1040/ccs/ccs_base/msp430/include/msp430fr2433.h
-stepper.obj: C:/ti/ccs1040/ccs/ccs_base/msp430/include/in430.h
-stepper.obj: C:/ti/ccs1040/ccs/tools/compiler/ti-cgt-msp430_20.2.5.LTS/include/intrinsics.h
-stepper.obj: C:/ti/ccs1040/ccs/tools/compiler/ti-cgt-msp430_20.2.5.LTS/include/intrinsics_legacy_undefs.h
-stepper.obj: C:/ti/ccs1040/ccs/ccs_base/msp430/include/msp430fr2xx_4xxgeneric.h
 stepper.obj: C:/ti/ccs1040/ccs/tools/compiler/ti-cgt-msp430_20.2.5.LTS/include/stdint.h
 stepper.obj: C:/ti/ccs1040/ccs/tools/compiler/ti-cgt-msp430_20.2.5.LTS/include/_ti_config.h
 stepper.obj: C:/ti/ccs1040/ccs/tools/compiler/ti-cgt-msp430_20.2.5.LTS/include/linkage.h
@@ -19,6 +11,14 @@ stepper.obj: C:/ti/ccs1040/ccs/tools/compiler/ti-cgt-msp430_20.2.5.LTS/include/s
 stepper.obj: C:/ti/ccs1040/ccs/tools/compiler/ti-cgt-msp430_20.2.5.LTS/include/machine/_types.h
 stepper.obj: C:/ti/ccs1040/ccs/tools/compiler/ti-cgt-msp430_20.2.5.LTS/include/machine/_stdint.h
 stepper.obj: C:/ti/ccs1040/ccs/tools/compiler/ti-cgt-msp430_20.2.5.LTS/include/sys/_stdint.h
+stepper.obj: C:/Users/Student/Box/CapstoneDev/MSP430/driverlib/MSP430FR2xx_4xx/driverlib.h
+stepper.obj: C:/Users/Student/Box/CapstoneDev/MSP430/driverlib/MSP430FR2xx_4xx/inc/hw_memmap.h
+stepper.obj: C:/ti/ccs1040/ccs/ccs_base/msp430/include/msp430.h
+stepper.obj: C:/ti/ccs1040/ccs/ccs_base/msp430/include/msp430fr2433.h
+stepper.obj: C:/ti/ccs1040/ccs/ccs_base/msp430/include/in430.h
+stepper.obj: C:/ti/ccs1040/ccs/tools/compiler/ti-cgt-msp430_20.2.5.LTS/include/intrinsics.h
+stepper.obj: C:/ti/ccs1040/ccs/tools/compiler/ti-cgt-msp430_20.2.5.LTS/include/intrinsics_legacy_undefs.h
+stepper.obj: C:/ti/ccs1040/ccs/ccs_base/msp430/include/msp430fr2xx_4xxgeneric.h
 stepper.obj: C:/ti/ccs1040/ccs/tools/compiler/ti-cgt-msp430_20.2.5.LTS/include/stdbool.h
 stepper.obj: C:/Users/Student/Box/CapstoneDev/MSP430/driverlib/MSP430FR2xx_4xx/rom_driverlib.h
 stepper.obj: C:/Users/Student/Box/CapstoneDev/MSP430/driverlib/MSP430FR2xx_4xx/rom_headers/rom_driverlib_fr253x_fr263x.h
@@ -52,22 +52,6 @@ stepper.obj: ../defines.h
 
 ../stepper.c:
 
-C:/Users/Student/Box/CapstoneDev/MSP430/driverlib/MSP430FR2xx_4xx/driverlib.h:
-
-C:/Users/Student/Box/CapstoneDev/MSP430/driverlib/MSP430FR2xx_4xx/inc/hw_memmap.h:
-
-C:/ti/ccs1040/ccs/ccs_base/msp430/include/msp430.h:
-
-C:/ti/ccs1040/ccs/ccs_base/msp430/include/msp430fr2433.h:
-
-C:/ti/ccs1040/ccs/ccs_base/msp430/include/in430.h:
-
-C:/ti/ccs1040/ccs/tools/compiler/ti-cgt-msp430_20.2.5.LTS/include/intrinsics.h:
-
-C:/ti/ccs1040/ccs/tools/compiler/ti-cgt-msp430_20.2.5.LTS/include/intrinsics_legacy_undefs.h:
-
-C:/ti/ccs1040/ccs/ccs_base/msp430/include/msp430fr2xx_4xxgeneric.h:
-
 C:/ti/ccs1040/ccs/tools/compiler/ti-cgt-msp430_20.2.5.LTS/include/stdint.h:
 
 C:/ti/ccs1040/ccs/tools/compiler/ti-cgt-msp430_20.2.5.LTS/include/_ti_config.h:
@@ -87,6 +71,22 @@ C:/ti/ccs1040/ccs/tools/compiler/ti-cgt-msp430_20.2.5.LTS/include/machine/_types
 C:/ti/ccs1040/ccs/tools/compiler/ti-cgt-msp430_20.2.5.LTS/include/machine/_stdint.h:
 
 C:/ti/ccs1040/ccs/tools/compiler/ti-cgt-msp430_20.2.5.LTS/include/sys/_stdint.h:
+
+C:/Users/Student/Box/CapstoneDev/MSP430/driverlib/MSP430FR2xx_4xx/driverlib.h:
+
+C:/Users/Student/Box/CapstoneDev/MSP430/driverlib/MSP430FR2xx_4xx/inc/hw_memmap.h:
+
+C:/ti/ccs1040/ccs/ccs_base/msp430/include/msp430.h:
+
+C:/ti/ccs1040/ccs/ccs_base/msp430/include/msp430fr2433.h:
+
+C:/ti/ccs1040/ccs/ccs_base/msp430/include/in430.h:
+
+C:/ti/ccs1040/ccs/tools/compiler/ti-cgt-msp430_20.2.5.LTS/include/intrinsics.h:
+
+C:/ti/ccs1040/ccs/tools/compiler/ti-cgt-msp430_20.2.5.LTS/include/intrinsics_legacy_undefs.h:
+
+C:/ti/ccs1040/ccs/ccs_base/msp430/include/msp430fr2xx_4xxgeneric.h:
 
 C:/ti/ccs1040/ccs/tools/compiler/ti-cgt-msp430_20.2.5.LTS/include/stdbool.h:
 

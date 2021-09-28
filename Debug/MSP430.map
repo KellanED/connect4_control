@@ -1,10 +1,10 @@
 ******************************************************************************
                   MSP430 Linker PC v20.2.5                     
 ******************************************************************************
->> Linked Tue Sep 28 16:51:54 2021
+>> Linked Tue Sep 28 18:25:31 2021
 
 OUTPUT FILE NAME:   <MSP430.out>
-ENTRY POINT SYMBOL: "_c_int00_noinit_noargs"  address: 0000c780
+ENTRY POINT SYMBOL: "_c_int00_noargs"  address: 0000c8a0
 
 
 MEMORY CONFIGURATION
@@ -15,8 +15,8 @@ MEMORY CONFIGURATION
   PERIPHERALS_8BIT      00000010   000000f0  00000000  000000f0  RWIX
   PERIPHERALS_16BIT     00000100   00000100  00000000  00000100  RWIX
   INFOA                 00001800   00000200  00000000  00000200  RWIX
-  RAM                   00002000   00001000  000000a0  00000f60  RWIX
-  FRAM                  0000c400   00003b80  000003ca  000037b6  RWIX
+  RAM                   00002000   00001000  000000ae  00000f52  RWIX
+  FRAM                  0000c400   00003b80  00000580  00003600  RWIX
   JTAGSIGNATURE         0000ff80   00000004  00000004  00000000  RWIX  ffff 
   BSLSIGNATURE          0000ff84   00000004  00000004  00000000  RWIX  ffff 
   INT00                 0000ff88   00000002  00000000  00000002  RWIX
@@ -89,45 +89,62 @@ section   page    origin      length       input sections
 .TI.persistent 
 *          0    0000c400    00000000     UNINITIALIZED
 
-.cinit     0    0000c400    00000000     UNINITIALIZED
+.cinit     0    0000c400    00000010     
+                  0000c400    00000007     (.cinit..data.load) [load image, compression = lzss]
+                  0000c407    00000001     --HOLE-- [fill = 0]
+                  0000c408    00000004     (__TI_handler_table)
+                  0000c40c    00000004     (__TI_cinit_table)
 
-.pinit     0    0000c400    00000000     UNINITIALIZED
+.pinit     0    0000c410    00000000     UNINITIALIZED
 
-.binit     0    0000c400    00000000     
+.binit     0    0000c410    00000000     
 
 .init_array 
-*          0    0000c400    00000000     UNINITIALIZED
+*          0    0000c410    00000000     UNINITIALIZED
 
 .mspabi.exidx 
-*          0    0000c400    00000000     UNINITIALIZED
+*          0    0000c410    00000000     UNINITIALIZED
 
 .mspabi.extab 
-*          0    0000c400    00000000     UNINITIALIZED
+*          0    0000c410    00000000     UNINITIALIZED
 
-.const     0    0000c400    00000028     
-                  0000c400    0000001c     gpio.obj (.const:GPIO_PORT_TO_BASE)
-                  0000c41c    0000000c     stepper.obj (.const:$P$T0$1)
+.const     0    0000c410    0000001c     
+                  0000c410    0000001c     gpio.obj (.const:GPIO_PORT_TO_BASE)
 
-.text      0    0000c428    000003a2     
-                  0000c428    000000ca     cs.obj (.text:CS_initFLL)
-                  0000c4f2    000000c8     cs.obj (.text:CS_initClockSignal)
-                  0000c5ba    00000058     stepper.obj (.text:stepper_init)
-                  0000c612    00000050     timer_a.obj (.text:Timer_A_outputPWM)
-                  0000c662    00000046     main.obj (.text:main)
-                  0000c6a8    00000040     gpio.obj (.text:GPIO_setAsPeripheralModuleFunctionOutputPin)
-                  0000c6e8    00000036     cs.obj (.text:CS_initFLLSettle)
-                  0000c71e    0000001e     gpio.obj (.text:GPIO_setAsOutputPin)
-                  0000c73c    00000018     stepper.obj (.text:timer1_a1_isr)
-                  0000c754    00000016     gpio.obj (.text:GPIO_toggleOutputOnPin)
-                  0000c76a    00000016     wdt_a.obj (.text:WDT_A_hold)
-                  0000c780    00000014     rts430x_sc_sd_eabi.lib : boot.c.obj (.text:_c_int00_noinit_noargs)
-                  0000c794    00000012                            : memcpy.c.obj (.text:memcpy)
-                  0000c7a6    00000008                            : isr_trap.asm.obj (.text:_isr:__TI_ISR_TRAP)
-                  0000c7ae    00000006     pmm.obj (.text:PMM_unlockLPM5)
-                  0000c7b4    00000006     timer_a.obj (.text:Timer_A_clearTimerInterrupt)
-                  0000c7ba    00000006     timer_a.obj (.text:Timer_A_enableInterrupt)
-                  0000c7c0    00000006     rts430x_sc_sd_eabi.lib : exit.c.obj (.text:abort)
-                  0000c7c6    00000004                            : pre_init.c.obj (.text:_system_pre_init)
+.text      0    0000c42c    00000554     
+                  0000c42c    000000ca     cs.obj (.text:CS_initFLL)
+                  0000c4f6    000000c8     cs.obj (.text:CS_initClockSignal)
+                  0000c5be    00000086     main.obj (.text:main)
+                  0000c644    0000006e     rts430x_sc_sd_eabi.lib : copy_decompress_lzss.c.obj (.text:decompress:lzss:__TI_decompress_lzss)
+                  0000c6b2    00000052                            : autoinit.c.obj (.text:__TI_auto_init_nobinit_nopinit_hold_wdt:__TI_auto_init_nobinit_nopinit_hold_wdt)
+                  0000c704    00000050     timer_a.obj (.text:Timer_A_outputPWM)
+                  0000c754    00000040     gpio.obj (.text:GPIO_setAsPeripheralModuleFunctionOutputPin)
+                  0000c794    00000038     stepper.obj (.text:stepper_init)
+                  0000c7cc    00000036     cs.obj (.text:CS_initFLLSettle)
+                  0000c802    00000036     stepper.obj (.text:stepper_send_steps)
+                  0000c838    00000026     gpio.obj (.text:GPIO_setAsInputPinWithPullUpResistor)
+                  0000c85e    00000024     stepper.obj (.text:TIMER1_A1_ISR)
+                  0000c882    0000001e     gpio.obj (.text:GPIO_setAsOutputPin)
+                  0000c8a0    0000001c     rts430x_sc_sd_eabi.lib : boot.c.obj (.text:_c_int00_noargs)
+                  0000c8bc    0000001a     gpio.obj (.text:GPIO_getInputPinValue)
+                  0000c8d6    00000016     gpio.obj (.text:GPIO_setOutputHighOnPin)
+                  0000c8ec    00000016     gpio.obj (.text:GPIO_setOutputLowOnPin)
+                  0000c902    00000016     gpio.obj (.text:GPIO_toggleOutputOnPin)
+                  0000c918    00000016     wdt_a.obj (.text:WDT_A_hold)
+                  0000c92e    00000012     rts430x_sc_sd_eabi.lib : copy_decompress_none.c.obj (.text:decompress:none:__TI_decompress_none)
+                  0000c940    00000012                            : memcpy.c.obj (.text:memcpy)
+                  0000c952    00000008     timer_a.obj (.text:Timer_A_stop)
+                  0000c95a    00000008     rts430x_sc_sd_eabi.lib : isr_trap.asm.obj (.text:_isr:__TI_ISR_TRAP)
+                  0000c962    00000006     pmm.obj (.text:PMM_unlockLPM5)
+                  0000c968    00000006     timer_a.obj (.text:Timer_A_clearTimerInterrupt)
+                  0000c96e    00000006     timer_a.obj (.text:Timer_A_enableInterrupt)
+                  0000c974    00000006     rts430x_sc_sd_eabi.lib : exit.c.obj (.text:abort)
+                  0000c97a    00000004                            : pre_init.c.obj (.text:_system_pre_init)
+                  0000c97e    00000002                            : startup.c.obj (.text:_system_post_cinit)
+
+.data      0    00002000    0000000e     UNINITIALIZED
+                  00002000    0000000c     stepper.obj (.data:param)
+                  0000200c    00000002     stepper.obj (.data)
 
 .stack     0    00002f60    000000a0     UNINITIALIZED
                   00002f60    00000002     rts430x_sc_sd_eabi.lib : boot.c.obj (.stack)
@@ -206,52 +223,70 @@ $fill001   0    0000ff84    00000004
 
 MODULE SUMMARY
 
-       Module             code   ro data   rw data
-       ------             ----   -------   -------
+       Module                       code   ro data   rw data
+       ------                       ----   -------   -------
     .\
-       stepper.obj        112    14        0      
-       main.obj           70     0         0      
-    +--+------------------+------+---------+---------+
-       Total:             182    14        0      
-                                                  
+       stepper.obj                  146    2         14     
+       main.obj                     134    0         0      
+    +--+----------------------------+------+---------+---------+
+       Total:                       280    2         14     
+                                                            
     .\driverlib\MSP430FR2xx_4xx\
-       cs.obj             456    0         0      
-       gpio.obj           116    28        0      
-       timer_a.obj        92     0         0      
-       wdt_a.obj          22     0         0      
-       pmm.obj            6      0         0      
-    +--+------------------+------+---------+---------+
-       Total:             692    28        0      
-                                                  
+       cs.obj                       456    0         0      
+       gpio.obj                     224    28        0      
+       timer_a.obj                  100    0         0      
+       wdt_a.obj                    22     0         0      
+       pmm.obj                      6      0         0      
+    +--+----------------------------+------+---------+---------+
+       Total:                       808    28        0      
+                                                            
     C:\ti\ccs1040\ccs\tools\compiler\ti-cgt-msp430_20.2.5.LTS\lib\rts430x_sc_sd_eabi.lib
-       boot.c.obj         20     2         0      
-       memcpy.c.obj       18     0         0      
-       isr_trap.asm.obj   8      0         0      
-       exit.c.obj         6      0         0      
-       pre_init.c.obj     4      0         0      
-       int41.asm.obj      0      2         0      
-       int42.asm.obj      0      2         0      
-       int43.asm.obj      0      2         0      
-       int44.asm.obj      0      2         0      
-       int45.asm.obj      0      2         0      
-       int46.asm.obj      0      2         0      
-       int47.asm.obj      0      2         0      
-       int48.asm.obj      0      2         0      
-       int49.asm.obj      0      2         0      
-       int50.asm.obj      0      2         0      
-       int51.asm.obj      0      2         0      
-       int52.asm.obj      0      2         0      
-       int54.asm.obj      0      2         0      
-       int55.asm.obj      0      2         0      
-       int56.asm.obj      0      2         0      
-       int57.asm.obj      0      2         0      
-       int58.asm.obj      0      2         0      
-    +--+------------------+------+---------+---------+
-       Total:             56     36        0      
-                                                  
-       Stack:             0      0         160    
-    +--+------------------+------+---------+---------+
-       Grand Total:       930    78        160    
+       copy_decompress_lzss.c.obj   110    0         0      
+       autoinit.c.obj               82     0         0      
+       boot.c.obj                   28     2         0      
+       copy_decompress_none.c.obj   18     0         0      
+       memcpy.c.obj                 18     0         0      
+       isr_trap.asm.obj             8      0         0      
+       exit.c.obj                   6      0         0      
+       pre_init.c.obj               4      0         0      
+       int41.asm.obj                0      2         0      
+       int42.asm.obj                0      2         0      
+       int43.asm.obj                0      2         0      
+       int44.asm.obj                0      2         0      
+       int45.asm.obj                0      2         0      
+       int46.asm.obj                0      2         0      
+       int47.asm.obj                0      2         0      
+       int48.asm.obj                0      2         0      
+       int49.asm.obj                0      2         0      
+       int50.asm.obj                0      2         0      
+       int51.asm.obj                0      2         0      
+       int52.asm.obj                0      2         0      
+       int54.asm.obj                0      2         0      
+       int55.asm.obj                0      2         0      
+       int56.asm.obj                0      2         0      
+       int57.asm.obj                0      2         0      
+       int58.asm.obj                0      2         0      
+       startup.c.obj                2      0         0      
+    +--+----------------------------+------+---------+---------+
+       Total:                       276    36        0      
+                                                            
+       Stack:                       0      0         160    
+       Linker Generated:            0      15        0      
+    +--+----------------------------+------+---------+---------+
+       Grand Total:                 1364   81        174    
+
+
+LINKER GENERATED COPY TABLES
+
+__TI_cinit_table @ 0000c40c records: 1, size/record: 4, table size: 4
+	.data: load addr=0000c400, load size=00000007 bytes, run addr=00002000, run size=0000000e bytes, compression=lzss
+
+
+LINKER GENERATED HANDLER TABLE
+
+__TI_handler_table @ 0000c408 records: 2, size/record: 2, table size: 4
+	index: 0, handler: __TI_decompress_lzss
+	index: 1, handler: __TI_decompress_none
 
 
 GLOBAL SYMBOLS: SORTED ALPHABETICALLY BY Name 
@@ -336,7 +371,7 @@ address   name
 00000672  BAKMEM9                                    
 00000673  BAKMEM9_H                                  
 00000672  BAKMEM9_L                                  
-0000c7c0  C$$EXIT                                    
+0000c974  C$$EXIT                                    
 000001c0  CRCDI                                      
 000001c2  CRCDIRB                                    
 000001c3  CRCDIRB_H                                  
@@ -376,9 +411,9 @@ address   name
 00000190  CSCTL8                                     
 00000191  CSCTL8_H                                   
 00000190  CSCTL8_L                                   
-0000c4f2  CS_initClockSignal                         
-0000c428  CS_initFLL                                 
-0000c6e8  CS_initFLLSettle                           
+0000c4f6  CS_initClockSignal                         
+0000c42c  CS_initFLL                                 
+0000c7cc  CS_initFLLSettle                           
 000001a0  FRCTL0                                     
 000001a1  FRCTL0_H                                   
 000001a0  FRCTL0_L                                   
@@ -388,9 +423,13 @@ address   name
 000001a6  GCCTL1                                     
 000001a7  GCCTL1_H                                   
 000001a6  GCCTL1_L                                   
-0000c71e  GPIO_setAsOutputPin                        
-0000c6a8  GPIO_setAsPeripheralModuleFunctionOutputPin
-0000c754  GPIO_toggleOutputOnPin                     
+0000c8bc  GPIO_getInputPinValue                      
+0000c838  GPIO_setAsInputPinWithPullUpResistor       
+0000c882  GPIO_setAsOutputPin                        
+0000c754  GPIO_setAsPeripheralModuleFunctionOutputPin
+0000c8d6  GPIO_setOutputHighOnPin                    
+0000c8ec  GPIO_setOutputLowOnPin                     
+0000c902  GPIO_toggleOutputOnPin                     
 000004c4  MAC                                        
 000004da  MAC32H                                     
 000004db  MAC32H_H                                   
@@ -504,7 +543,7 @@ address   name
 0000012a  PMMIFG                                     
 0000012b  PMMIFG_H                                   
 0000012a  PMMIFG_L                                   
-0000c7ae  PMM_unlockLPM5                             
+0000c962  PMM_unlockLPM5                             
 000004e4  RES0                                       
 000004e5  RES0_H                                     
 000004e4  RES0_L                                     
@@ -625,9 +664,11 @@ address   name
 00000460  TA3EX0                                     
 0000046e  TA3IV                                      
 00000450  TA3R                                       
-0000c7b4  Timer_A_clearTimerInterrupt                
-0000c7ba  Timer_A_enableInterrupt                    
-0000c612  Timer_A_outputPWM                          
+0000c85e  TIMER1_A1_ISR                              
+0000c968  Timer_A_clearTimerInterrupt                
+0000c96e  Timer_A_enableInterrupt                    
+0000c704  Timer_A_outputPWM                          
+0000c952  Timer_A_stop                               
 00000510  UCA0ABCTL                                  
 00000506  UCA0BRW                                    
 00000507  UCA0BRW_H                                  
@@ -740,10 +781,17 @@ address   name
 000001cc  WDTCTL                                     
 000001cd  WDTCTL_H                                   
 000001cc  WDTCTL_L                                   
-0000c76a  WDT_A_hold                                 
+0000c918  WDT_A_hold                                 
 00003000  __STACK_END                                
 000000a0  __STACK_SIZE                               
-0000c7a6  __TI_ISR_TRAP                              
+0000c40c  __TI_CINIT_Base                            
+0000c410  __TI_CINIT_Limit                           
+0000c408  __TI_Handler_Table_Base                    
+0000c40c  __TI_Handler_Table_Limit                   
+0000c95a  __TI_ISR_TRAP                              
+0000c6b2  __TI_auto_init_nobinit_nopinit_hold_wdt    
+0000c644  __TI_decompress_lzss                       
+0000c92e  __TI_decompress_none                       
 0000ffda  __TI_int41                                 
 0000ffdc  __TI_int42                                 
 0000ffde  __TI_int43                                 
@@ -766,15 +814,16 @@ ffffffff  __TI_pprof_out_hndl
 ffffffff  __TI_prof_data_size                        
 ffffffff  __TI_prof_data_start                       
 ffffffff  __c_args__                                 
-0000c780  _c_int00_noinit_noargs                     
+0000c8a0  _c_int00_noargs                            
 0000fffe  _reset_vector                              
 00002f60  _stack                                     
-0000c7c6  _system_pre_init                           
-0000c7c0  abort                                      
-0000c662  main                                       
-0000c794  memcpy                                     
-0000c5ba  stepper_init                               
-0000c73c  timer1_a1_isr                              
+0000c97e  _system_post_cinit                         
+0000c97a  _system_pre_init                           
+0000c974  abort                                      
+0000c5be  main                                       
+0000c940  memcpy                                     
+0000c794  stepper_init                               
+0000c802  stepper_send_steps                         
 
 
 GLOBAL SYMBOLS: SORTED BY Symbol Address 
@@ -1255,26 +1304,40 @@ address   name
 0000071f  ADCIV_H                                    
 00002f60  _stack                                     
 00003000  __STACK_END                                
-0000c428  CS_initFLL                                 
-0000c4f2  CS_initClockSignal                         
-0000c5ba  stepper_init                               
-0000c612  Timer_A_outputPWM                          
-0000c662  main                                       
-0000c6a8  GPIO_setAsPeripheralModuleFunctionOutputPin
-0000c6e8  CS_initFLLSettle                           
-0000c71e  GPIO_setAsOutputPin                        
-0000c73c  timer1_a1_isr                              
-0000c754  GPIO_toggleOutputOnPin                     
-0000c76a  WDT_A_hold                                 
-0000c780  _c_int00_noinit_noargs                     
-0000c794  memcpy                                     
-0000c7a6  __TI_ISR_TRAP                              
-0000c7ae  PMM_unlockLPM5                             
-0000c7b4  Timer_A_clearTimerInterrupt                
-0000c7ba  Timer_A_enableInterrupt                    
-0000c7c0  C$$EXIT                                    
-0000c7c0  abort                                      
-0000c7c6  _system_pre_init                           
+0000c408  __TI_Handler_Table_Base                    
+0000c40c  __TI_CINIT_Base                            
+0000c40c  __TI_Handler_Table_Limit                   
+0000c410  __TI_CINIT_Limit                           
+0000c42c  CS_initFLL                                 
+0000c4f6  CS_initClockSignal                         
+0000c5be  main                                       
+0000c644  __TI_decompress_lzss                       
+0000c6b2  __TI_auto_init_nobinit_nopinit_hold_wdt    
+0000c704  Timer_A_outputPWM                          
+0000c754  GPIO_setAsPeripheralModuleFunctionOutputPin
+0000c794  stepper_init                               
+0000c7cc  CS_initFLLSettle                           
+0000c802  stepper_send_steps                         
+0000c838  GPIO_setAsInputPinWithPullUpResistor       
+0000c85e  TIMER1_A1_ISR                              
+0000c882  GPIO_setAsOutputPin                        
+0000c8a0  _c_int00_noargs                            
+0000c8bc  GPIO_getInputPinValue                      
+0000c8d6  GPIO_setOutputHighOnPin                    
+0000c8ec  GPIO_setOutputLowOnPin                     
+0000c902  GPIO_toggleOutputOnPin                     
+0000c918  WDT_A_hold                                 
+0000c92e  __TI_decompress_none                       
+0000c940  memcpy                                     
+0000c952  Timer_A_stop                               
+0000c95a  __TI_ISR_TRAP                              
+0000c962  PMM_unlockLPM5                             
+0000c968  Timer_A_clearTimerInterrupt                
+0000c96e  Timer_A_enableInterrupt                    
+0000c974  C$$EXIT                                    
+0000c974  abort                                      
+0000c97a  _system_pre_init                           
+0000c97e  _system_post_cinit                         
 0000ffda  __TI_int41                                 
 0000ffdc  __TI_int42                                 
 0000ffde  __TI_int43                                 
@@ -1299,4 +1362,4 @@ ffffffff  __TI_prof_data_size
 ffffffff  __TI_prof_data_start                       
 ffffffff  __c_args__                                 
 
-[517 symbols]
+[531 symbols]

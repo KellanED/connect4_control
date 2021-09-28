@@ -6,10 +6,15 @@
 */
 
 // Includes
+#include <stdint.h>
 #include "driverlib.h"
 #include "Board.h"
 #include "stepper.h"
 #include "defines.h"
+
+// Local variables
+static uint16_t count = 0;
+static Timer_A_outputPWMParam param = {0};
 
 /*!
 * @brief Initializes TimerA1 to be used for PWM output for the stepper motor.
@@ -19,25 +24,26 @@
 */
 void stepper_init(void)
 {
-    // Generate PWM - TimerA1 runs in Up mode
-    Timer_A_outputPWMParam param = {0};
+    // Configure PWM - TimerA1 runs in Up mode
     param.clockSource = TIMER_A_CLOCKSOURCE_SMCLK;
     param.clockSourceDivider = TIMER_A_CLOCKSOURCE_DIVIDER_8;
-    param.timerPeriod = TIMER_A_PERIOD;
+    param.timerPeriod = TIMER_PERIOD;
     param.compareRegister = TIMER_A_CAPTURECOMPARE_REGISTER_1;
     param.compareOutputMode = TIMER_A_OUTPUTMODE_SET_RESET;
-    param.dutyCycle = DUTY_CYCLE;
-    Timer_A_outputPWM(TIMER_A1_BASE, &param);
+    param.dutyCycle = TIMER_DUTY_CYCLE;
 
-    // TA1.1 = P1.5 as PWM output, *********** NEED TO VERIFY IF THIS WORKS *************
+    // Set PWM output pin.
     GPIO_setAsPeripheralModuleFunctionOutputPin(
-        GPIO_PORT_P1,
-        GPIO_PIN5,
-        GPIO_SECONDARY_MODULE_FUNCTION
+        TIMER_PWM_PORT,
+        TIMER_PWM_PIN,
+        TIMER_PWM_PIN_FUNCTION
         );
 
-    // Enable TimerA1 interrupts
-    Timer_A_enableInterrupt(TIMER_A1_BASE);
+    // Set direction output pin.
+    GPIO_setAsOutputPin(
+        DIR_PORT,
+        DIR_PIN
+        );
 }
 
 /*!
@@ -47,7 +53,23 @@ void stepper_init(void)
 * @par
 * This function can only be run after stepper_init() is run.
 */
-void stepper_send_steps(uint16_t num, uint8_t dir);
+void stepper_send_steps(uint16_t num, uint8_t dir)
+{
+    // Change direction according to parameter
+    if (dir)
+    {
+        GPIO_setOutputHighOnPin(DIR_PORT, DIR_PIN);
+    }
+    else
+    {
+        GPIO_setOutputLowOnPin(DIR_PORT, DIR_PIN);
+    }
+
+    // Change count to number of steps and start PWM output
+    count = num;
+    Timer_A_outputPWM(TIMER_A1_BASE, &param);
+    Timer_A_enableInterrupt(TIMER_A1_BASE);
+}
 
 /*!
 * @brief Moves the stepper motor back to its home position as determined
@@ -64,15 +86,21 @@ void stepper_go_home(void);
 * Should trigger when timer counts to 0.
 */
 #pragma vector=TIMER1_A1_VECTOR
-__interrupt void timer1_a1_isr(void)
+__interrupt void TIMER1_A1_ISR(void)
 {
-    __no_operation();
+    // Decrement count and stop PWM output if no more steps left
+    count--;
+    if (count <= 0)
+    {
+        Timer_A_stop(TIMER_A1_BASE);
+    }
 
-    //Toggle LED1
+    // Toggle LED1 - for verification that interrupt is running, remove later
     GPIO_toggleOutputOnPin(
-        GPIO_PORT_LED1,
-        GPIO_PIN_LED1
+        GPIO_PORT_P1,
+        GPIO_PIN1
         );
 
+    // Clear interrupt flag
     Timer_A_clearTimerInterrupt(TIMER_A1_BASE);
 }
