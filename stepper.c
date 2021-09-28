@@ -43,10 +43,11 @@ void stepper_init(void)
 /*!
 * @brief Send a number of steps to the stepper motor.
 * @param[in] num The number of steps to be run.
+* @param[in] dir The direction the motor should spin. 1 or 0
 * @par
 * This function can only be run after stepper_init() is run.
 */
-void stepper_send_steps(uint16_t num);
+void stepper_send_steps(uint16_t num, uint8_t dir);
 
 /*!
 * @brief Moves the stepper motor back to its home position as determined

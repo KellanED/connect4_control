@@ -10,7 +10,7 @@
 
 void stepper_init(void);
 
-void stepper_send_steps(uint16_t num);
+void stepper_send_steps(uint16_t num, uint8_t dir);
 
 void stepper_go_home(void);
 
