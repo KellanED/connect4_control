@@ -83,10 +83,18 @@ void main (void)
         if (!GPIO_getInputPinValue(GPIO_PORT_S1, GPIO_PIN_S1))
         {
             stepper_send_steps(0x0005, 0x0001);
+            GPIO_toggleOutputOnPin(
+                GPIO_PORT_P1,
+                GPIO_PIN1
+                );
         }
         else if (!GPIO_getInputPinValue(GPIO_PORT_S2, GPIO_PIN_S2))
         {
             stepper_send_steps(0x0003, 0x0000);
+            GPIO_toggleOutputOnPin(
+                GPIO_PORT_P1,
+                GPIO_PIN1
+                );
         }
     }
 

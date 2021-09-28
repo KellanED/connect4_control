@@ -69,6 +69,9 @@ void stepper_send_steps(uint16_t num, uint8_t dir)
     count = num;
     Timer_A_outputPWM(TIMER_A1_BASE, &param);
     Timer_A_enableInterrupt(TIMER_A1_BASE);
+
+    // Wait until all steps have been run before executing other code
+    while (count != 0);
 }
 
 /*!
@@ -86,7 +89,7 @@ void stepper_go_home(void);
 * Should trigger when timer counts to 0.
 */
 #pragma vector=TIMER1_A1_VECTOR
-__interrupt void TIMER1_A1_ISR(void)
+__interrupt void timer1_a1_isr(void)
 {
     // Decrement count and stop PWM output if no more steps left
     count--;
@@ -94,12 +97,6 @@ __interrupt void TIMER1_A1_ISR(void)
     {
         Timer_A_stop(TIMER_A1_BASE);
     }
-
-    // Toggle LED1 - for verification that interrupt is running, remove later
-    GPIO_toggleOutputOnPin(
-        GPIO_PORT_P1,
-        GPIO_PIN1
-        );
 
     // Clear interrupt flag
     Timer_A_clearTimerInterrupt(TIMER_A1_BASE);
