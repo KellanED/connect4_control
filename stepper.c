@@ -24,7 +24,7 @@ static Timer_A_outputPWMParam param = {0};
 */
 void stepper_init(void)
 {
-    // Configure PWM - TimerA1 runs in Up mode
+    // Configure PWM - TimerA0 runs in Up mode
     param.clockSource = TIMER_A_CLOCKSOURCE_SMCLK;
     param.clockSourceDivider = TIMER_A_CLOCKSOURCE_DIVIDER_8;
     param.timerPeriod = TIMER_PERIOD;
@@ -67,8 +67,8 @@ void stepper_send_steps(uint16_t num, uint8_t dir)
 
     // Change count to number of steps and start PWM output
     count = num;
-    Timer_A_outputPWM(TIMER_A1_BASE, &param);
-    Timer_A_enableInterrupt(TIMER_A1_BASE);
+    Timer_A_outputPWM(TIMER_A0_BASE, &param);
+    Timer_A_enableInterrupt(TIMER_A0_BASE);
 
     // Wait until all steps have been run before executing other code
     while (count != 0);
@@ -88,16 +88,16 @@ void stepper_go_home(void);
 * @par
 * Should trigger when timer counts to 0.
 */
-#pragma vector=TIMER1_A1_VECTOR
-__interrupt void timer1_a1_isr(void)
+#pragma vector=TIMER0_A1_VECTOR
+__interrupt void timer0_a1_isr(void)
 {
     // Decrement count and stop PWM output if no more steps left
     count--;
     if (count <= 0)
     {
-        Timer_A_stop(TIMER_A1_BASE);
+        Timer_A_stop(TIMER_A0_BASE);
     }
 
     // Clear interrupt flag
-    Timer_A_clearTimerInterrupt(TIMER_A1_BASE);
+    Timer_A_clearTimerInterrupt(TIMER_A0_BASE);
 }

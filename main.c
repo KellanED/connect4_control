@@ -52,10 +52,10 @@ void main (void)
     // Initialize stepper driver
     stepper_init();
 
-    // Set LED1 as an output pin. - for verification, remove later
+    // Set P1.5 as an output pin. - for verification, remove later
     GPIO_setAsOutputPin(
         GPIO_PORT_P1,
-        GPIO_PIN1
+        GPIO_PIN5
         );
 
     // Disable the GPIO power-on default high-impedance mode to activate
@@ -85,7 +85,7 @@ void main (void)
             stepper_send_steps(0x0005, 0x0001);
             GPIO_toggleOutputOnPin(
                 GPIO_PORT_P1,
-                GPIO_PIN1
+                GPIO_PIN5
                 );
         }
         else if (!GPIO_getInputPinValue(GPIO_PORT_S2, GPIO_PIN_S2))
@@ -93,7 +93,7 @@ void main (void)
             stepper_send_steps(0x0003, 0x0000);
             GPIO_toggleOutputOnPin(
                 GPIO_PORT_P1,
-                GPIO_PIN1
+                GPIO_PIN5
                 );
         }
     }
