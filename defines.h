@@ -19,8 +19,8 @@
 #define DIR_PIN                          GPIO_PIN0
 #define DIR_PORT_OUT                     P1OUT
 
-#define BUMP_PORT                        P2
-#define BUMP_PIN                         7
+#define BUMP_PORT                        P3
+#define BUMP_PIN                         2
 
 #define UART_RX_PORT                     P1
 #define UART_RX_PIN                      5
@@ -31,9 +31,9 @@
 #define PHOTO_PIN_1                      0
 #define PHOTO_PIN_2                      1
 #define PHOTO_PIN_3                      2
-#define PHOTO_PIN_4                      3
-#define PHOTO_PIN_5                      4
-#define PHOTO_PIN_6                      5
-#define PHOTO_PIN_7                      6
+#define PHOTO_PIN_4                      4
+#define PHOTO_PIN_5                      5
+#define PHOTO_PIN_6                      6
+#define PHOTO_PIN_7                      7
 
 #endif /* DEFINES_H */
