@@ -19,21 +19,30 @@
 #define DIR_PIN                          GPIO_PIN0
 #define DIR_PORT_OUT                     P1OUT
 
+#define SERVO_PORT                       P1
+#define SERVO_PIN                        5
+
 #define BUMP_PORT                        P3
 #define BUMP_PIN                         2
 
-#define UART_RX_PORT                     P1
+#define UART_RX_PORT                     P2
 #define UART_RX_PIN                      5
-#define UART_TX_PORT                     P1
-#define UART_TX_PIN                      4
+#define UART_TX_PORT                     P2
+#define UART_TX_PIN                      6
 
-#define PHOTO_PORT                       P2
-#define PHOTO_PIN_1                      0
-#define PHOTO_PIN_2                      1
-#define PHOTO_PIN_3                      2
-#define PHOTO_PIN_4                      4
-#define PHOTO_PIN_5                      5
-#define PHOTO_PIN_6                      6
-#define PHOTO_PIN_7                      7
+#define PHOTO1_PORT                      P2
+#define PHOTO1_PIN                       0
+#define PHOTO2_PORT                      P2
+#define PHOTO2_PIN                       1
+#define PHOTO3_PORT                      P2
+#define PHOTO3_PIN                       2
+#define PHOTO4_PORT                      P2
+#define PHOTO4_PIN                       4
+#define PHOTO5_PORT                      P2
+#define PHOTO5_PIN                       7
+#define PHOTO6_PORT                      P1
+#define PHOTO6_PIN                       2
+#define PHOTO7_PORT                      P1
+#define PHOTO7_PIN                       3
 
 #endif /* DEFINES_H */
