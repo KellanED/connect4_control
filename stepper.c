@@ -44,6 +44,12 @@ void stepper_init(void)
         DIR_PORT,
         DIR_PIN
         );
+
+    // Set bump input pin
+    GPIO_setAsInputPinWithPullUpResistor(
+        BUMP_PORT,
+        BUMP_PIN
+        );
 }
 
 /*!
@@ -80,7 +86,13 @@ void stepper_send_steps(uint16_t num, uint8_t dir)
 * @par
 * This function can only be run after stepper_init() is run.
 */
-void stepper_go_home(void);
+void stepper_go_home(void)
+{
+    while (GPIO_getInputPinValue(BUMP_PORT, BUMP_PIN))
+    {
+        stepper_send_steps(1, 0);
+    }
+}
 
 /*!
 * @brief TIMER0_A3 interrupt vector ISR

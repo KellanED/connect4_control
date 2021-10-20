@@ -65,12 +65,6 @@ void main (void)
     // Enable global interrupts
     __bis_SR_register(GIE);
 
-    // Set S1 as input. for verification, remove later
-    GPIO_setAsInputPinWithPullUpResistor(
-            GPIO_PORT_S1,
-            GPIO_PIN_S1
-            );
-
     // Set S2 as input. for verification, remove later
     GPIO_setAsInputPinWithPullUpResistor(
             GPIO_PORT_S2,
@@ -79,22 +73,10 @@ void main (void)
 
     while(1)
     {
-        // testing send steps
-        if (!GPIO_getInputPinValue(GPIO_PORT_S1, GPIO_PIN_S1))
+        // testing stepper homing
+        if (!GPIO_getInputPinValue(GPIO_PORT_S2, GPIO_PIN_S2))
         {
-            stepper_send_steps(0x0005, 0x0001);
-            GPIO_toggleOutputOnPin(
-                GPIO_PORT_P1,
-                GPIO_PIN5
-                );
-        }
-        else if (!GPIO_getInputPinValue(GPIO_PORT_S2, GPIO_PIN_S2))
-        {
-            stepper_send_steps(0x0003, 0x0000);
-            GPIO_toggleOutputOnPin(
-                GPIO_PORT_P1,
-                GPIO_PIN5
-                );
+            stepper_go_home();
         }
     }
 

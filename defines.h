@@ -22,8 +22,8 @@
 #define SERVO_PORT                       P1
 #define SERVO_PIN                        5
 
-#define BUMP_PORT                        P3
-#define BUMP_PIN                         2
+#define BUMP_PORT                        GPIO_PORT_P3
+#define BUMP_PIN                         GPIO_PIN2
 
 #define UART_RX_PORT                     P2
 #define UART_RX_PIN                      5
