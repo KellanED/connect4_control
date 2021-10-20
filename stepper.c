@@ -17,10 +17,10 @@ static uint16_t count = 0;
 static Timer_A_outputPWMParam param = {0};
 
 /*!
-* @brief Initializes TimerA1 to be used for PWM output for the stepper motor.
+* @brief Initializes TimerA0 to be used for PWM output for the stepper motor.
 *
 * @par
-* PWM output should be on TA1.1 = P1.5.
+* PWM output should be on TA0.1 = P1.1.
 */
 void stepper_init(void)
 {

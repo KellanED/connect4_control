@@ -35,6 +35,7 @@
 #include "Board.h"
 #include "defines.h"
 #include "stepper.h"
+#include "servo.h"
 
 /******************************************************************************/
 
@@ -52,6 +53,9 @@ void main (void)
     // Initialize stepper driver
     stepper_init();
 
+    // Initialize servo
+    servo_init();
+
     // Set P1.5 as an output pin. - for verification, remove later
     GPIO_setAsOutputPin(
         GPIO_PORT_P1,
@@ -65,6 +69,12 @@ void main (void)
     // Enable global interrupts
     __bis_SR_register(GIE);
 
+    // Set S1 as input. for verification, remove later
+    GPIO_setAsInputPinWithPullUpResistor(
+            GPIO_PORT_S1,
+            GPIO_PIN_S1
+            );
+
     // Set S2 as input. for verification, remove later
     GPIO_setAsInputPinWithPullUpResistor(
             GPIO_PORT_S2,
@@ -73,10 +83,14 @@ void main (void)
 
     while(1)
     {
-        // testing stepper homing
+        // testing servo
+        if (!GPIO_getInputPinValue(GPIO_PORT_S1, GPIO_PIN_S1))
+        {
+            servo_write_min();
+        }
         if (!GPIO_getInputPinValue(GPIO_PORT_S2, GPIO_PIN_S2))
         {
-            stepper_go_home();
+            servo_write_max();
         }
     }
 
