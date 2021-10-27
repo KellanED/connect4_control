@@ -31,7 +31,7 @@
 #define BUMP_PORT                        GPIO_PORT_P3
 #define BUMP_PIN                         GPIO_PIN2
 
-#define UART_RX_PORT                     P2
+#define UART_RX_PORT                     P2      // UCA1
 #define UART_RX_PIN                      5
 #define UART_TX_PORT                     P2
 #define UART_TX_PIN                      6
