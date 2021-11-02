@@ -13,8 +13,8 @@
 #include "defines.h"
 
 // Local variables
-static uint16_t count = 0;
-static Timer_A_outputPWMParam param = {0};
+static uint16_t                 count = 0;
+static Timer_A_outputPWMParam   param = {0};
 
 /*!
 * @brief Initializes TimerA0 to be used for PWM output for the stepper motor.
@@ -22,15 +22,16 @@ static Timer_A_outputPWMParam param = {0};
 * @par
 * PWM output should be on TA0.1 = P1.1.
 */
-void stepper_init(void)
+void
+stepper_init (void)
 {
     // Configure PWM - TimerA0 runs in Up mode
-    param.clockSource = TIMER_A_CLOCKSOURCE_SMCLK;
-    param.clockSourceDivider = TIMER_A_CLOCKSOURCE_DIVIDER_8;
-    param.timerPeriod = TIMER_PERIOD;
-    param.compareRegister = TIMER_A_CAPTURECOMPARE_REGISTER_1;
-    param.compareOutputMode = TIMER_A_OUTPUTMODE_SET_RESET;
-    param.dutyCycle = TIMER_DUTY_CYCLE;
+    param.clockSource           = TIMER_A_CLOCKSOURCE_SMCLK;
+    param.clockSourceDivider    = TIMER_A_CLOCKSOURCE_DIVIDER_8;
+    param.timerPeriod           = TIMER_PERIOD;
+    param.compareRegister       = TIMER_A_CAPTURECOMPARE_REGISTER_1;
+    param.compareOutputMode     = TIMER_A_OUTPUTMODE_SET_RESET;
+    param.dutyCycle             = TIMER_DUTY_CYCLE;
 
     // Set PWM output pin.
     GPIO_setAsPeripheralModuleFunctionOutputPin(
@@ -50,7 +51,7 @@ void stepper_init(void)
         BUMP_PORT,
         BUMP_PIN
         );
-}
+}   /* stepper_init() */
 
 /*!
 * @brief Send a number of steps to the stepper motor.
@@ -59,7 +60,8 @@ void stepper_init(void)
 * @par
 * This function can only be run after stepper_init() is run.
 */
-void stepper_send_steps(uint16_t num, uint8_t dir)
+void
+stepper_send_steps (uint16_t num, uint8_t dir)
 {
     // Change direction according to parameter
     if (dir)
@@ -77,8 +79,8 @@ void stepper_send_steps(uint16_t num, uint8_t dir)
     Timer_A_enableInterrupt(TIMER_A0_BASE);
 
     // Wait until all steps have been run before executing other code
-    while (count != 0);
-}
+    while (0 != count);
+}   /* stepper_send_steps() */
 
 /*!
 * @brief Moves the stepper motor back to its home position as determined
@@ -86,13 +88,14 @@ void stepper_send_steps(uint16_t num, uint8_t dir)
 * @par
 * This function can only be run after stepper_init() is run.
 */
-void stepper_go_home(void)
+void
+stepper_go_home (void)
 {
     while (GPIO_getInputPinValue(BUMP_PORT, BUMP_PIN))
     {
         stepper_send_steps(1, 0);
     }
-}
+} /* stepper_go_home() */
 
 /*!
 * @brief TIMER0_A3 interrupt vector ISR
@@ -101,15 +104,18 @@ void stepper_go_home(void)
 * Should trigger when timer counts to 0.
 */
 #pragma vector=TIMER0_A1_VECTOR
-__interrupt void timer0_a1_isr(void)
+__interrupt void
+timer0_a1_isr (void)
 {
     // Decrement count and stop PWM output if no more steps left
     count--;
-    if (count <= 0)
+    if (0 >= count)
     {
         Timer_A_stop(TIMER_A0_BASE);
     }
 
     // Clear interrupt flag
     Timer_A_clearTimerInterrupt(TIMER_A0_BASE);
-}
+}   /* timer0_a1_isr() */
+
+/*** end of file ***/

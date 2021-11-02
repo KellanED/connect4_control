@@ -38,9 +38,9 @@
 #include "servo.h"
 #include "uart.h"
 
-turnType TURN = TBD;
-uint8_t RobotColumn;
-uint8_t HumanColumn;
+static turn_t   current_turn    = TBD;
+static uint8_t  RobotColumn     = 0;
+static uint8_t  HumanColumn     = 0;
 
 void main (void)
 {
@@ -69,8 +69,10 @@ void main (void)
     // Enable global interrupts
     __bis_SR_register(GIE);
 
-    // Uncomment when everything is hooked up
-    //stepper_go_home();
+    // Enable when everything is hooked up
+#if 0
+    stepper_go_home();
+#endif
 
     // Set S1 as input. for testing, remove later
     GPIO_setAsInputPinWithPullUpResistor(
@@ -79,11 +81,11 @@ void main (void)
         );
 
     // Wait for start game instruction from UART
-    TURN = uart_receive_start(); // @ = ROBOT, G = HUMAN
+    current_turn = uart_receive_start(); // @ = ROBOT, G = HUMAN
 
-    while(1)
+    while (1)
     {
-        if (TURN == ROBOT)
+        if (ROBOT == current_turn)
         {
             // Wait for column instruction from UART
             RobotColumn = uart_receive_column(); // p,q,r,s,t,u,v
@@ -96,10 +98,10 @@ void main (void)
             // Send stepper home
 
             // Wait for game status instruction from UART
-            TURN = uart_receive_status(TURN); // H = next turn, O = game over
+            current_turn = uart_receive_status(current_turn); // H = next turn, O = game over
         }
 
-        else if (TURN == HUMAN)
+        else if (HUMAN == current_turn)
         {
             // Poll photo-interrupters for chip detection
             while (GPIO_getInputPinValue(GPIO_PORT_S1, GPIO_PIN_S1));
@@ -109,12 +111,22 @@ void main (void)
             uart_send_column(HumanColumn); // h,i,j,k,l,m,n
 
             // Wait for game status instruction from UART
-            TURN = uart_receive_status(TURN); // H = next turn, O = game over
+            current_turn = uart_receive_status(current_turn); // H = next turn, O = game over
         }
 
-        else if (TURN == GAME_OVER)
+        else if (GAME_OVER == current_turn)
         {
-            while(1);
+            // For now, end the game by getting stuck here
+            for (;;);
+        }
+
+        else
+        {
+            // Should never get here, means that current_turn == TBD
+            for (;;);
         }
     }
 }
+
+/*** end of file ***/
+

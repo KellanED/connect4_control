@@ -14,16 +14,18 @@ typedef enum
     HUMAN,
     TBD,
     GAME_OVER
-} turnType;
+} turn_t;
 
 void uart_init(void);
 
-turnType uart_receive_start(void);
+turn_t uart_receive_start(void);
 
 uint8_t uart_receive_column(void);
 
-turnType uart_receive_status(turnType current_turn);
+turn_t uart_receive_status(turn_t current_turn);
 
 void uart_send_column(uint8_t column);
 
 #endif /* UART_H_ */
+
+/*** end of file ***/

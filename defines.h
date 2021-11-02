@@ -15,7 +15,6 @@
 #define TIMER_PWM_PORT                   GPIO_PORT_P1
 #define TIMER_PWM_PIN                    GPIO_PIN1
 #define TIMER_PWM_PIN_FUNCTION           GPIO_SECONDARY_MODULE_FUNCTION
-
 #define DIR_PORT                         GPIO_PORT_P1
 #define DIR_PIN                          GPIO_PIN0
 #define DIR_PORT_OUT                     P1OUT
@@ -28,14 +27,17 @@
 #define SERVO_PIN                        GPIO_PIN4
 #define SERVO_PIN_FUNCTION               GPIO_SECONDARY_MODULE_FUNCTION
 
+// Bump sensor for stepper homing
 #define BUMP_PORT                        GPIO_PORT_P3
 #define BUMP_PIN                         GPIO_PIN2
 
-#define UART_RX_PORT                     P2      // UCA1
+// UART1
+#define UART_RX_PORT                     P2
 #define UART_RX_PIN                      5
 #define UART_TX_PORT                     P2
 #define UART_TX_PIN                      6
 
+// Photointerrupters
 #define PHOTO1_PORT                      P2
 #define PHOTO1_PIN                       0
 #define PHOTO2_PORT                      P2
@@ -52,3 +54,6 @@
 #define PHOTO7_PIN                       3
 
 #endif /* DEFINES_H */
+
+/*** end of file ***/
+
