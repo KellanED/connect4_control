@@ -36,18 +36,9 @@
 #include "defines.h"
 #include "stepper.h"
 #include "servo.h"
+#include "uart.h"
 
-typedef enum
-{
-    ROBOT,
-    HUMAN,
-    TBD,
-    GAME_OVER
-} turnType;
 turnType TURN = TBD;
-
-uint8_t RxData;
-uint8_t TxData;
 uint8_t RobotColumn;
 uint8_t HumanColumn;
 
@@ -68,31 +59,8 @@ void main (void)
     // Initialize servo
     servo_init();
 
-    // Initialize UART, baudrate = 115200 *** FOR ACTUAL ROBOT USE UART A1 NEED TO CHANGE
-    EUSCI_A_UART_initParam UARTparam = {0};
-    UARTparam.selectClockSource = EUSCI_A_UART_CLOCKSOURCE_SMCLK;
-    UARTparam.clockPrescalar = 17;
-    UARTparam.firstModReg = 0;
-    UARTparam.secondModReg = 74;
-    UARTparam.parity = EUSCI_A_UART_NO_PARITY;
-    UARTparam.msborLsbFirst = EUSCI_A_UART_LSB_FIRST;
-    UARTparam.numberofStopBits = EUSCI_A_UART_ONE_STOP_BIT;
-    UARTparam.uartMode = EUSCI_A_UART_MODE;
-    UARTparam.overSampling = 0;
-    EUSCI_A_UART_init(EUSCI_A0_BASE, &UARTparam);
-    EUSCI_A_UART_enable(EUSCI_A0_BASE);
-
-    //Configure UART pins
-    GPIO_setAsPeripheralModuleFunctionOutputPin(
-        GPIO_PORT_UCA0TXD,
-        GPIO_PIN_UCA0TXD,
-        GPIO_FUNCTION_UCA0TXD
-    );
-    GPIO_setAsPeripheralModuleFunctionInputPin(
-        GPIO_PORT_UCA0RXD,
-        GPIO_PIN_UCA0RXD,
-        GPIO_FUNCTION_UCA0RXD
-    );
+    // Initialize UART, baudrate = 115200
+    uart_init();
 
     // Disable the GPIO power-on default high-impedance mode to activate
     // previously configured port settings
@@ -111,30 +79,15 @@ void main (void)
         );
 
     // Wait for start game instruction from UART
-    do
-    {
-        RxData = EUSCI_A_UART_receiveData(EUSCI_A0_BASE);
-        if (RxData == 0x40) // @
-        {
-            TURN = ROBOT;
-        }
-        else if (RxData == 0x47) // G
-        {
-            TURN = HUMAN;
-        }
-    } while(TURN == TBD);
+    TURN = uart_receive_start(); // @ = ROBOT, G = HUMAN
 
     while(1)
     {
         if (TURN == ROBOT)
         {
             // Wait for column instruction from UART
-            do
-            {
-                RxData = EUSCI_A_UART_receiveData(EUSCI_A0_BASE);
-            } while((RxData & 0x38) != 0x30);
+            RobotColumn = uart_receive_column(); // p,q,r,s,t,u,v
 
-            RobotColumn = RxData & 0x07; // p,q,r,s,t,u,v
             // Move stepper motor
             // Activate servo
             // Poll photo-interrupters for correct column
@@ -143,19 +96,7 @@ void main (void)
             // Send stepper home
 
             // Wait for game status instruction from UART
-            do
-            {
-                RxData = EUSCI_A_UART_receiveData(EUSCI_A0_BASE);
-            } while((RxData & 0x38) != 0x08);
-
-            if (RxData == 0x48) // H
-            {
-                TURN = HUMAN;
-            }
-            else if (RxData == 0x4F) // O
-            {
-                TURN = GAME_OVER;
-            }
+            TURN = uart_receive_status(TURN); // H = next turn, O = game over
         }
 
         else if (TURN == HUMAN)
@@ -163,25 +104,12 @@ void main (void)
             // Poll photo-interrupters for chip detection
             while (GPIO_getInputPinValue(GPIO_PORT_S1, GPIO_PIN_S1));
             HumanColumn = 3;
-            TxData = 0x68 | HumanColumn; // h,i,j,k,l,m,n
 
             // Send column instruction through UART
-            EUSCI_A_UART_transmitData(EUSCI_A0_BASE, TxData);
+            uart_send_column(HumanColumn); // h,i,j,k,l,m,n
 
             // Wait for game status instruction from UART
-            do
-            {
-                RxData = EUSCI_A_UART_receiveData(EUSCI_A0_BASE);
-            } while((RxData & 0x38) != 0x08);
-
-            if (RxData == 0x48) // H
-            {
-                TURN = ROBOT;
-            }
-            else if (RxData == 0x4F) // O
-            {
-                TURN = GAME_OVER;
-            }
+            TURN = uart_receive_status(TURN); // H = next turn, O = game over
         }
 
         else if (TURN == GAME_OVER)
