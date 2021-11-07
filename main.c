@@ -37,10 +37,11 @@
 #include "stepper.h"
 #include "servo.h"
 #include "uart.h"
+#include "photo.h"
 
 static turn_t   current_turn    = TBD;
-static uint8_t  RobotColumn     = 0;
-static uint8_t  HumanColumn     = 0;
+static uint8_t  robot_column    = 0;
+static uint8_t  human_column    = 0;
 
 void main (void)
 {
@@ -61,6 +62,9 @@ void main (void)
 
     // Initialize UART, baudrate = 115200
     uart_init();
+
+    // Initialize photo-interrupters
+    photo_init();
 
     // Disable the GPIO power-on default high-impedance mode to activate
     // previously configured port settings
@@ -85,10 +89,11 @@ void main (void)
 
     while (1)
     {
+
         if (ROBOT == current_turn)
         {
             // Wait for column instruction from UART
-            RobotColumn = uart_receive_column(); // p,q,r,s,t,u,v
+            robot_column = uart_receive_column(); // p,q,r,s,t,u,v
 
             // Move stepper motor
             // Activate servo
@@ -104,11 +109,10 @@ void main (void)
         else if (HUMAN == current_turn)
         {
             // Poll photo-interrupters for chip detection
-            while (GPIO_getInputPinValue(GPIO_PORT_S1, GPIO_PIN_S1));
-            HumanColumn = 3;
+            human_column = photo_wait();
 
             // Send column instruction through UART
-            uart_send_column(HumanColumn); // h,i,j,k,l,m,n
+            uart_send_column(human_column); // h,i,j,k,l,m,n
 
             // Wait for game status instruction from UART
             current_turn = uart_receive_status(current_turn); // H = next turn, O = game over

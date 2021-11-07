@@ -39,19 +39,21 @@
 
 // Photointerrupters
 #define PHOTO1_PORT                      P2
-#define PHOTO1_PIN                       0
+#define PHOTO1                           BIT0
 #define PHOTO2_PORT                      P2
-#define PHOTO2_PIN                       1
+#define PHOTO2                           BIT1
 #define PHOTO3_PORT                      P2
-#define PHOTO3_PIN                       2
+#define PHOTO3                           BIT2
 #define PHOTO4_PORT                      P2
-#define PHOTO4_PIN                       4
+#define PHOTO4                           BIT4
 #define PHOTO5_PORT                      P2
-#define PHOTO5_PIN                       7
+#define PHOTO5                           BIT7
 #define PHOTO6_PORT                      P1
-#define PHOTO6_PIN                       2
+#define PHOTO6                           BIT2
 #define PHOTO7_PORT                      P1
-#define PHOTO7_PIN                       3
+#define PHOTO7                           BIT3
+
+#define PHOTO_IN                        ((P1IN & (PHOTO7 | PHOTO6)) << 3) | ((P2IN & PHOTO5) >> 3) | ((P2IN & PHOTO4) >> 1) | (P2IN & (PHOTO3 | PHOTO2 | PHOTO1))
 
 #endif /* DEFINES_H */
 
