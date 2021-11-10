@@ -32,10 +32,12 @@
 #define BUMP_PIN                         GPIO_PIN2
 
 // UART1
-#define UART_RX_PORT                     P2
-#define UART_RX_PIN                      5
-#define UART_TX_PORT                     P2
-#define UART_TX_PIN                      6
+#define UART_RX_PORT                     GPIO_PORT_P2
+#define UART_RX_PIN                      GPIO_PIN5
+#define UART_RX_FUNCTION                 GPIO_PRIMARY_MODULE_FUNCTION
+#define UART_TX_PORT                     GPIO_PORT_P2
+#define UART_TX_PIN                      GPIO_PIN6
+#define UART_TX_FUNCTION                 GPIO_PRIMARY_MODULE_FUNCTION
 
 // Photointerrupters
 #define PHOTO1_PORT                      P2

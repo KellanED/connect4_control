@@ -23,7 +23,16 @@
 #include <stdint.h>
 #include "driverlib.h"
 #include "Board.h"
+#include "defines.h"
 #include "uart.h"
+
+//#define UART1 // UART1 for actual robot, UART0 for launchpad
+
+#ifdef UART1
+#define UART_BASE EUSCI_A1_BASE
+#else
+#define UART_BASE EUSCI_A0_BASE
+#endif
 
 // Local variables
 static uint8_t RxData = 0;
@@ -51,10 +60,23 @@ uart_init (void)
     UARTparam.numberofStopBits  = EUSCI_A_UART_ONE_STOP_BIT;
     UARTparam.uartMode          = EUSCI_A_UART_MODE;
     UARTparam.overSampling      = 0;
-    EUSCI_A_UART_init(EUSCI_A0_BASE, &UARTparam);
-    EUSCI_A_UART_enable(EUSCI_A0_BASE);
+    EUSCI_A_UART_init(UART_BASE, &UARTparam);
+    EUSCI_A_UART_enable(UART_BASE);
 
-    // Configure UART pins
+#ifdef UART1
+    // Configure UART1 pins
+    GPIO_setAsPeripheralModuleFunctionOutputPin(
+        UART_TX_PORT,
+        UART_TX_PIN,
+        UART_TX_FUNCTION
+    );
+    GPIO_setAsPeripheralModuleFunctionInputPin(
+        UART_RX_PORT,
+        UART_RX_PIN,
+        UART_RX_FUNCTION
+    );
+#else
+    // Configure UART0 pins
     GPIO_setAsPeripheralModuleFunctionOutputPin(
         GPIO_PORT_UCA0TXD,
         GPIO_PIN_UCA0TXD,
@@ -65,6 +87,7 @@ uart_init (void)
         GPIO_PIN_UCA0RXD,
         GPIO_FUNCTION_UCA0RXD
     );
+#endif
 }   /* uart_init() */
 
 /*!
@@ -79,7 +102,7 @@ uart_receive_start (void)
     // Stay in this loop until the appropriate instruction is received.
     do
     {
-        RxData = EUSCI_A_UART_receiveData(EUSCI_A0_BASE);
+        RxData = EUSCI_A_UART_receiveData(UART_BASE);
         if (0x40 == RxData) // @
         {
             initial_turn = ROBOT;
@@ -104,7 +127,7 @@ uart_receive_column (void)
     // Stay in this loop until the appropriate instruction is received.
     do
     {
-        RxData = EUSCI_A_UART_receiveData(EUSCI_A0_BASE);
+        RxData = EUSCI_A_UART_receiveData(UART_BASE);
     }
     while (0x30 != (RxData & 0x38));
 
@@ -124,7 +147,7 @@ uart_receive_status (turn_t current_turn)
     // Stay in this loop until the proper instruction is received.
     do
     {
-        RxData = EUSCI_A_UART_receiveData(EUSCI_A0_BASE);
+        RxData = EUSCI_A_UART_receiveData(UART_BASE);
     }
     while (0x08 != (RxData & 0x38));
 
@@ -156,7 +179,7 @@ void
 uart_send_column (uint8_t column)
 {
     TxData = 0x68 | column; // h,i,j,k,l,m,n
-    EUSCI_A_UART_transmitData(EUSCI_A0_BASE, TxData);
+    EUSCI_A_UART_transmitData(UART_BASE, TxData);
 }   /* uart_send_column() */
 
 /*** end of file ***/
