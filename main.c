@@ -39,6 +39,13 @@
 #include "uart.h"
 #include "photo.h"
 
+// 1 or 0 of these should be uncommented, all commented for production robot
+//#define bump_testing
+//#define photo_testing
+//#define uart_testing
+//#define servo_testing
+#define stepper_testing // only test after testing bump switch
+
 static turn_t   current_turn    = TBD;
 static uint8_t  robot_column    = 0;
 static uint8_t  human_column    = 0;
@@ -73,23 +80,29 @@ void main (void)
     // Enable global interrupts
     __bis_SR_register(GIE);
 
-    // Enable when everything is hooked up
-#if 0
-    stepper_go_home();
-#endif
-
-    // Set S1 as input. for testing, remove later
+#if defined(uart_testing) || defined(servo_testing) || defined(bump_testing) || defined(stepper_testing) || defined(photo_testing)
+    // Set S1 as input
     GPIO_setAsInputPinWithPullUpResistor(
         GPIO_PORT_S1,
         GPIO_PIN_S1
         );
+    // Set S2 as input
+    GPIO_setAsInputPinWithPullUpResistor(
+        GPIO_PORT_S2,
+        GPIO_PIN_S2
+        );
+#else
+    // Send stepper to 0 position
+    stepper_go_home();
 
     // Wait for start game instruction from UART
     current_turn = uart_receive_start(); // @ = ROBOT, G = HUMAN
+#endif
 
     while (1)
     {
 
+#if !defined(uart_testing) && !defined(servo_testing) && !defined(bump_testing) && !defined(stepper_testing) && !defined(photo_testing)
         if (ROBOT == current_turn)
         {
             // Wait for column instruction from UART
@@ -129,6 +142,56 @@ void main (void)
             // Should never get here, means that current_turn == TBD
             for (;;);
         }
+#endif
+
+#if defined(uart_testing)
+        // Wait until one of the side buttons is pressed
+        while (GPIO_getInputPinValue(GPIO_PORT_S1, GPIO_PIN_S1) && GPIO_getInputPinValue(GPIO_PORT_S2, GPIO_PIN_S2))
+        {
+            // Should send h,i,j,k,l,m,n upon successive presses
+            uart_send_column(human_column++);
+        }
+        robot_column = uart_receive_column();
+#endif
+
+#if defined(servo_testing)
+        // move to max value on one button, min value on other button
+        if (!GPIO_getInputPinValue(GPIO_PORT_S1, GPIO_PIN_S1))
+        {
+            servo_write_min();
+        }
+        if (!GPIO_getInputPinValue(GPIO_PORT_S2, GPIO_PIN_S2))
+        {
+            servo_write_max();
+        }
+#endif
+
+#if defined(bump_testing)
+        // should increment human_column upon successive presses of bump switch
+        while (GPIO_getInputPinValue(BUMP_PORT, BUMP_PIN));
+        human_column++;
+#endif
+
+#if defined(stepper_testing)
+        // move 10 steps on one button, go home on other button
+        if (!GPIO_getInputPinValue(GPIO_PORT_S1, GPIO_PIN_S1))
+        {
+            stepper_enable();
+            stepper_send_steps(10, 1);
+            stepper_disable();
+        }
+        if (!GPIO_getInputPinValue(GPIO_PORT_S2, GPIO_PIN_S2))
+        {
+            stepper_enable();
+            stepper_go_home();
+            stepper_disable();
+        }
+#endif
+
+#if defined(photo_testing)
+        human_column = photo_wait();
+#endif
+
     }
 }
 

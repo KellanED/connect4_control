@@ -18,9 +18,12 @@ static Timer_A_outputPWMParam   param = {0};
 
 /*!
 * @brief Initializes TimerA0 to be used for PWM output for the stepper motor.
+* Stepper is off by default.
 *
 * @par
-* PWM output should be on TA0.1 = P1.1.
+* PWM/step output on TA0.1 = P1.1.
+* Direction output on P1.0.
+* nEnable output on P3.1.
 */
 void
 stepper_init (void)
@@ -46,12 +49,39 @@ stepper_init (void)
         DIR_PIN
         );
 
-    // Set bump input pin
+    // Set nEnable output pin.
+    GPIO_setAsOutputPin(
+        NENABLE_PORT,
+        NENABLE_PIN
+        );
+
+    // Set bump input pin.
     GPIO_setAsInputPinWithPullUpResistor(
         BUMP_PORT,
         BUMP_PIN
         );
+
+    // Disable stepper
+    stepper_disable();
 }   /* stepper_init() */
+
+/*!
+ * @brief Enables the stepper by driving output low on nEnable.
+ */
+void
+stepper_enable (void)
+{
+    GPIO_setOutputLowOnPin(NENABLE_PORT, NENABLE_PIN);
+}
+
+/*!
+ * @brief Disables the stepper by driving output high on nEnable.
+ */
+void
+stepper_disable (void)
+{
+    GPIO_setOutputHighOnPin(NENABLE_PORT, NENABLE_PIN);
+}
 
 /*!
 * @brief Send a number of steps to the stepper motor.
@@ -80,6 +110,7 @@ stepper_send_steps (uint16_t num, uint8_t dir)
 
     // Wait until all steps have been run before executing other code
     while (0 != count);
+
 }   /* stepper_send_steps() */
 
 /*!

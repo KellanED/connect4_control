@@ -10,14 +10,16 @@
 #define CS_MCLK_FLLREF_RATIO             488     // MCLK/FLLRef ratio 16k/32786
 
 // Stepper PWM Output using Timer0_A3
-#define TIMER_PERIOD                     62499   // 62500/250000 = 0.25, 4Hz
-#define TIMER_DUTY_CYCLE                 31249   // 50% duty cycle
+#define TIMER_PERIOD                     249   // 250/250000 = 0.001, 1kHz
+#define TIMER_DUTY_CYCLE                 124   // 50% duty cycle
 #define TIMER_PWM_PORT                   GPIO_PORT_P1
 #define TIMER_PWM_PIN                    GPIO_PIN1
 #define TIMER_PWM_PIN_FUNCTION           GPIO_SECONDARY_MODULE_FUNCTION
 #define DIR_PORT                         GPIO_PORT_P1
 #define DIR_PIN                          GPIO_PIN0
 #define DIR_PORT_OUT                     P1OUT
+#define NENABLE_PORT                     GPIO_PORT_P3
+#define NENABLE_PIN                      GPIO_PIN1
 
 // Servo PWM Output using Timer1_A3
 #define SERVO_TIMER_PERIOD               4999    // 5000/250000 = 0.02, 50Hz

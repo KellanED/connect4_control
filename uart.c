@@ -26,7 +26,7 @@
 #include "defines.h"
 #include "uart.h"
 
-//#define UART1 // UART1 for actual robot, UART0 for launchpad
+#define UART1 // UART1 for actual robot, UART0 for launchpad
 
 #ifdef UART1
 #define UART_BASE EUSCI_A1_BASE
