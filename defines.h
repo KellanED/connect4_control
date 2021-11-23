@@ -23,7 +23,7 @@
 
 // Servo PWM Output using Timer1_A3
 #define SERVO_TIMER_PERIOD               4999    // 5000/250000 = 0.02, 50Hz
-#define SERVO_MIN_DUTY                   124      // 225/250000 = 900us
+#define SERVO_MIN_DUTY                   124     // 225/250000 = 900us
 #define SERVO_MAX_DUTY                   574     // 525/250000 = 2100us
 #define SERVO_PORT                       GPIO_PORT_P1
 #define SERVO_PIN                        GPIO_PIN4

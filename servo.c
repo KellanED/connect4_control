@@ -44,7 +44,7 @@ servo_init (void)
 }   /* servo_init() */
 
 /*!
-* @brief Writes the servo to its minimum position.
+* @brief Writes the servo to its minimum position. OUT
 */
 void
 servo_write_min (void)
@@ -54,7 +54,7 @@ servo_write_min (void)
 }   /* servo_write_min() */
 
 /*!
-* @brief Writes the servo to its maximum position.
+* @brief Writes the servo to its maximum position. IN
 */
 void
 servo_write_max (void)

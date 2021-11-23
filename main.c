@@ -30,6 +30,8 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * --/COPYRIGHT--*/
 
+// TODO: implement timeout and disconnect errors
+
 // Includes
 #include "driverlib.h"
 #include "Board.h"
@@ -44,7 +46,10 @@
 //#define photo_testing
 //#define uart_testing
 //#define servo_testing
-#define stepper_testing // only test after testing bump switch
+//#define stepper_testing // only test after testing bump switch
+
+static const uint16_t steps_to_board    = 0;    // NEED TO CHANGE
+static const uint16_t column_steps      = 248;  // May need to change
 
 static turn_t   current_turn    = TBD;
 static uint8_t  robot_column    = 0;
@@ -92,6 +97,9 @@ void main (void)
         GPIO_PIN_S2
         );
 #else
+    // Retract chip dispenser
+    servo_write_max();
+
     // Send stepper to 0 position
     stepper_go_home();
 
@@ -108,12 +116,23 @@ void main (void)
             // Wait for column instruction from UART
             robot_column = uart_receive_column(); // p,q,r,s,t,u,v
 
-            // Move stepper motor
-            // Activate servo
+            // Move stepper motor to appropriate column
+            stepper_send_steps(steps_to_board + (robot_column * column_steps));
+
+            // Extend chip dispenser
+            servo_write_min();
+
             // Poll photo-interrupters for correct column
-            // Respond to chip errors if necessary
-            // Deactivate servo
+            if (photo_wait() != robot_column()) {
+                // Incorrect column detected
+                uart_send_error(ROBOT_CHIP_ERROR);
+            }
+
+            // Retract chip dispenser
+            servo_write_max();
+
             // Send stepper home
+            stepper_go_home();
 
             // Wait for game status instruction from UART
             current_turn = uart_receive_status(current_turn); // H = next turn, O = game over
@@ -145,13 +164,16 @@ void main (void)
 #endif
 
 #if defined(uart_testing)
-        // Wait until one of the side buttons is pressed
-        while (GPIO_getInputPinValue(GPIO_PORT_S1, GPIO_PIN_S1) && GPIO_getInputPinValue(GPIO_PORT_S2, GPIO_PIN_S2))
+        if (!GPIO_getInputPinValue(GPIO_PORT_S1, GPIO_PIN_S1))
         {
             // Should send h,i,j,k,l,m,n upon successive presses
             uart_send_column(human_column++);
         }
-        robot_column = uart_receive_column();
+        if (!GPIO_getInputPinValue(GPIO_PORT_S2, GPIO_PIN_S2))
+        {
+            // Receive p,q,r,s,t,u,v
+            robot_column = uart_receive_column();
+        }
 #endif
 
 #if defined(servo_testing)
@@ -176,8 +198,10 @@ void main (void)
         // move 10 steps on one button, go home on other button
         if (!GPIO_getInputPinValue(GPIO_PORT_S1, GPIO_PIN_S1))
         {
+            // 1000 steps = 141mm
+            // 248 steps = 35mm
             stepper_enable();
-            stepper_send_steps(10, 1);
+            stepper_send_steps(248, 1);
             stepper_disable();
         }
         if (!GPIO_getInputPinValue(GPIO_PORT_S2, GPIO_PIN_S2))
