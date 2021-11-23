@@ -48,8 +48,8 @@
 //#define servo_testing
 //#define stepper_testing // only test after testing bump switch
 
-static const uint16_t steps_to_board    = 0;    // NEED TO CHANGE
-static const uint16_t column_steps      = 248;  // May need to change
+static const uint16_t steps_to_board    = 0;    // TODO: figure out what this should be
+static const uint16_t column_steps      = 248;  // TODO: Verify this number
 
 static turn_t   current_turn    = TBD;
 static uint8_t  robot_column    = 0;
