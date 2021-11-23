@@ -117,13 +117,16 @@ void main (void)
             robot_column = uart_receive_column(); // p,q,r,s,t,u,v
 
             // Move stepper motor to appropriate column
-            stepper_send_steps(steps_to_board + (robot_column * column_steps));
+            stepper_enable();
+            stepper_send_steps(steps_to_board + (robot_column * column_steps), 1);
+            stepper_disable();
 
             // Extend chip dispenser
             servo_write_min();
 
             // Poll photo-interrupters for correct column
-            if (photo_wait() != robot_column()) {
+            uint8_t detected_column = photo_wait();
+            if (detected_column != robot_column) {
                 // Incorrect column detected
                 uart_send_error(ROBOT_CHIP_ERROR);
             }
@@ -132,7 +135,9 @@ void main (void)
             servo_write_max();
 
             // Send stepper home
+            stepper_enable();
             stepper_go_home();
+            stepper_disable();
 
             // Wait for game status instruction from UART
             current_turn = uart_receive_status(current_turn); // H = next turn, O = game over
@@ -190,8 +195,11 @@ void main (void)
 
 #if defined(bump_testing)
         // should increment human_column upon successive presses of bump switch
-        while (GPIO_getInputPinValue(BUMP_PORT, BUMP_PIN));
-        human_column++;
+        if (!GPIO_getInputPinValue(BUMP_PORT, BUMP_PIN))
+        {
+            GPIO_toggleOutputOnPin(GPIO_PORT_P1, GPIO_PIN0);
+            human_column++;
+        }
 #endif
 
 #if defined(stepper_testing)
