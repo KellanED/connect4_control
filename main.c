@@ -48,6 +48,7 @@
 //#define servo_testing
 //#define stepper_testing // only test after testing bump switch
 
+static const uint16_t num_columns       = 7;
 static const uint16_t steps_to_board    = 0;    // TODO: figure out what this should be
 static const uint16_t column_steps      = 248;  // TODO: Verify this number
 
@@ -101,7 +102,9 @@ void main (void)
     servo_write_max();
 
     // Send stepper to 0 position
+    stepper_enable();
     stepper_go_home();
+    stepper_disable();
 
     // Wait for start game instruction from UART
     current_turn = uart_receive_start(); // @ = ROBOT, G = HUMAN
@@ -116,9 +119,10 @@ void main (void)
             // Wait for column instruction from UART
             robot_column = uart_receive_column(); // p,q,r,s,t,u,v
 
-            // Move stepper motor to appropriate column
+            // Move stepper motor to appropriate column, some weird math bc we 0 is farthest away
+            uint16_t robot_column_steps = steps_to_board + column_steps * (num_columns - robot_column - 1);
             stepper_enable();
-            stepper_send_steps(steps_to_board + (robot_column * column_steps), 1);
+            stepper_send_steps(robot_column_steps, 1);
             stepper_disable();
 
             // Extend chip dispenser
