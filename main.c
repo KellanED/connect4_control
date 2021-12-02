@@ -47,9 +47,10 @@
 //#define uart_testing
 //#define servo_testing
 //#define stepper_testing // only test after testing bump switch
+//#define mechanical_testing
 
 static const uint16_t num_columns       = 7;
-static const uint16_t steps_to_board    = 0;    // TODO: figure out what this should be
+static const uint16_t steps_to_board    = 333;  // 47mm = 333 steps
 static const uint16_t column_steps      = 248;  // TODO: Verify this number
 
 static turn_t   current_turn    = TBD;
@@ -113,7 +114,7 @@ void main (void)
     while (1)
     {
 
-#if !defined(uart_testing) && !defined(servo_testing) && !defined(bump_testing) && !defined(stepper_testing) && !defined(photo_testing)
+#if !defined(uart_testing) && !defined(servo_testing) && !defined(bump_testing) && !defined(stepper_testing) && !defined(photo_testing) && !defined(mechanical_testing)
         if (ROBOT == current_turn)
         {
             // Wait for column instruction from UART
@@ -161,8 +162,8 @@ void main (void)
 
         else if (GAME_OVER == current_turn)
         {
-            // For now, end the game by getting stuck here
-            for (;;);
+            // Wait for start game instruction from UART
+                current_turn = uart_receive_start(); // @ = ROBOT, G = HUMAN
         }
 
         else
@@ -226,6 +227,35 @@ void main (void)
 
 #if defined(photo_testing)
         human_column = photo_wait();
+#endif
+
+#if defined(mechanical_testing)
+        // Wait for column instruction from UART
+        robot_column = uart_receive_column(); // p,q,r,s,t,u,v
+
+        // Move stepper motor to appropriate column, some weird math bc we 0 is farthest away
+        uint16_t robot_column_steps = steps_to_board + column_steps * (num_columns - robot_column - 1);
+        stepper_enable();
+        stepper_send_steps(robot_column_steps, 1);
+        stepper_disable();
+
+        // Extend chip dispenser
+        servo_write_min();
+
+        // Poll photo-interrupters for correct column
+        uint8_t detected_column = photo_wait();
+        if (detected_column != robot_column) {
+            // Incorrect column detected
+            uart_send_error(ROBOT_CHIP_ERROR);
+        }
+
+        // Retract chip dispenser
+        servo_write_max();
+
+        // Send stepper home
+        stepper_enable();
+        stepper_go_home();
+        stepper_disable();
 #endif
 
     }
