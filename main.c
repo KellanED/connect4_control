@@ -50,8 +50,8 @@
 //#define mechanical_testing
 
 static const uint16_t num_columns       = 7;
-static const uint16_t steps_to_board    = 333;  // 47mm = 333 steps
-static const uint16_t column_steps      = 248;  // TODO: Verify this number
+static const uint16_t steps_to_board    = 319;  // 319 steps = 45mm, 1000 steps = 141mm
+static const uint16_t column_steps      = 248;
 
 static turn_t   current_turn    = TBD;
 static uint8_t  robot_column    = 0;
