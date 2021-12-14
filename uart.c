@@ -13,8 +13,9 @@
  * 01 001 111   game status     game over       O
  * 01 101 ABC   human column    abc = bin col#  h,i,j,k,l,m,n
  * 01 110 abc   robot column    abc = bin col#  p,q,r,s,t,u,v
- * 01 111 000   Error           robot chip      x
- * 01 111 001   Error           human chip      y
+ * 01 111 000   Error           wrong column    x
+ * 01 111 001   Error           chip jammed     y
+ * 01 010 111   No Error        no error        W
  */
 
 // Includes
@@ -185,10 +186,20 @@ uart_send_column (uint8_t column)
  * @param[in] The error to send. Enumerated in error_t.
  */
 void
-uart_send_error (error_t error)
+uart_send_error (uint8_t error)
 {
     TxData = 0x78 | error;
     EUSCI_A_UART_transmitData(UART_BASE, TxData);
 }   /* uart_send_error() */
+
+/*!
+ * @brief Send instruction that there was no error detecting chips
+ */
+void
+uart_send_no_error (void)
+{
+    TxData = 0x57;
+    EUSCI_A_UART_transmitData(UART_BASE, TxData);
+}   /* uart_send_no_error() */
 
 /*** end of file ***/

@@ -30,8 +30,6 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * --/COPYRIGHT--*/
 
-// TODO: implement timeout and disconnect errors
-
 // Includes
 #include "driverlib.h"
 #include "Board.h"
@@ -51,7 +49,7 @@
 
 static const uint16_t num_columns       = 7;
 static const uint16_t steps_to_board    = 319;  // 319 steps = 45mm, 1000 steps = 141mm
-static const uint16_t column_steps      = 248;
+static const uint16_t column_steps      = 248;  // 248 steps = 35mm
 
 static turn_t   current_turn    = TBD;
 static uint8_t  robot_column    = 0;
@@ -67,6 +65,7 @@ void main (void)
     CS_initClockSignal(CS_FLLREF, CS_REFOCLK_SELECT, CS_CLOCK_DIVIDER_1);
     CS_initFLLSettle(CS_MCLK_DESIRED_FREQUENCY_IN_KHZ, CS_MCLK_FLLREF_RATIO);
     CS_initClockSignal(CS_SMCLK, CS_DCOCLKDIV_SELECT, CS_CLOCK_DIVIDER_8);
+    CS_initClockSignal(CS_ACLK, CS_REFOCLK_SELECT, CS_CLOCK_DIVIDER_1);
 
     // Initialize stepper driver
     stepper_init();
@@ -130,11 +129,31 @@ void main (void)
             servo_write_min();
 
             // Poll photo-interrupters for correct column
-            uint8_t detected_column = photo_wait();
-            if (detected_column != robot_column) {
-                // Incorrect column detected
-                uart_send_error(ROBOT_CHIP_ERROR);
+            uint8_t detected_column;
+            uint8_t error_sent = 0;
+            do
+            {
+                detected_column = photo_wait(1);
+                // Check for error and send if one hasn't been sent yet
+                if ((detected_column != robot_column) && !error_sent)
+                {
+                    // Check for chip jam error
+                    if (detected_column == 7) // 7 means it timed out
+                    {
+                        uart_send_error(1);
+                    }
+                    // or wrong column error
+                    else
+                    {
+                        uart_send_error(0);
+                    }
+                    error_sent = 1;
+                }
             }
+            while (detected_column != robot_column);
+
+            // Send no error
+            uart_send_no_error(); // W
 
             // Retract chip dispenser
             servo_write_max();
@@ -151,7 +170,7 @@ void main (void)
         else if (HUMAN == current_turn)
         {
             // Poll photo-interrupters for chip detection
-            human_column = photo_wait();
+            human_column = photo_wait(0);
 
             // Send column instruction through UART
             uart_send_column(human_column); // h,i,j,k,l,m,n
@@ -243,11 +262,31 @@ void main (void)
         servo_write_min();
 
         // Poll photo-interrupters for correct column
-        uint8_t detected_column = photo_wait();
-        if (detected_column != robot_column) {
-            // Incorrect column detected
-            uart_send_error(ROBOT_CHIP_ERROR);
+        uint8_t detected_column;
+        uint8_t error_sent = 0;
+        do
+        {
+            detected_column = photo_wait(1);
+            // Check for error and send if one hasn't been sent yet
+            if ((detected_column != robot_column) && !error_sent)
+            {
+                // Check for chip jam error
+                if (detected_column == 7) // 7 means it timed out
+                {
+                    uart_send_error(1); // y
+                }
+                // or wrong column error
+                else
+                {
+                    uart_send_error(0); // x
+                }
+                error_sent = 1;
+            }
         }
+        while (detected_column != robot_column);
+
+        // Send no error
+        uart_send_no_error(); // W
 
         // Retract chip dispenser
         servo_write_max();

@@ -28,6 +28,15 @@ static Timer_A_outputPWMParam   param = {0};
 void
 stepper_init (void)
 {
+    // Set nEnable output pin.
+    GPIO_setAsOutputPin(
+        NENABLE_PORT,
+        NENABLE_PIN
+        );
+
+    // Disable stepper
+    stepper_disable();
+
     // Configure PWM - TimerA0 runs in Up mode
     param.clockSource           = TIMER_A_CLOCKSOURCE_SMCLK;
     param.clockSourceDivider    = TIMER_A_CLOCKSOURCE_DIVIDER_8;
@@ -49,20 +58,12 @@ stepper_init (void)
         DIR_PIN
         );
 
-    // Set nEnable output pin.
-    GPIO_setAsOutputPin(
-        NENABLE_PORT,
-        NENABLE_PIN
-        );
-
     // Set bump input pin.
     GPIO_setAsInputPinWithPullUpResistor(
         BUMP_PORT,
         BUMP_PIN
         );
 
-    // Disable stepper
-    stepper_disable();
 }   /* stepper_init() */
 
 /*!

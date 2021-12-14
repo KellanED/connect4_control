@@ -16,12 +16,6 @@ typedef enum
     GAME_OVER
 } turn_t;
 
-typedef enum
-{
-    ROBOT_CHIP_ERROR,
-    HUMAN_CHIP_ERROR
-} error_t;
-
 void uart_init(void);
 
 turn_t uart_receive_start(void);
@@ -32,7 +26,9 @@ turn_t uart_receive_status(turn_t current_turn);
 
 void uart_send_column(uint8_t column);
 
-void uart_send_error(error_t error);
+void uart_send_error(uint8_t error);
+
+void uart_send_no_error(void);
 
 #endif /* UART_H_ */
 
